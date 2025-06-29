@@ -39,48 +39,53 @@ def classify_grades():
 #Ejercicio 4
 def guess_number():
     
-    num_random = random.randint(1,10)
-    num_user = int(input("Introduce un número del 1 al 10: "))
-
+    num_random = random.randint(1, 10)
     while True:
         try:
+            num_user = int(input("Introduce un número del 1 al 10: "))
             while num_user != num_random:
                 num_user = int(input("Lo siento. Inténtalo de nuevo: "))
             return "Felicidades. Has adivinado el número secreto.\n"    
         except ValueError:
-            num_user = int(input("Entrada no válida. Introduce un número entero: "))
+            print("Entrada no válida. Introduce un número entero:")
                     
 #Ejercicio 5
 def skip_even_numbers():
     odd_numbers = []
-    num_user = int(input("Introduce un número para guardar los impares. Introduce '0' cuando quieras parar: "))
     
     while True:
         try:
-            while num_user != 0:
-                if num_user % 2 == 0:
-                    continue;
-                else:
-                    odd_numbers.append(num_user)
-            num_user = int(input("Introduce otro número (o '0' para terminar): "))
-            return odd_numbers
+            num_user = int(input("Introduce un número para guardar los impares. Introduce '0' cuando quieras parar: "))
+            
+            if num_user == 0:
+                break
+            
+            if num_user % 2 == 0:
+                continue
+            else:
+                odd_numbers.append(num_user)
+            
         except ValueError:
-            num_user = int(input("Introduce otro número (o '0' para terminar): "))
+            print("Entrada no válida.")
+            
+    return odd_numbers
             
 #Ejercicio 6
 def add_user_numbers(numbers):
     
-    list_strings = str.split(numbers, ",")
+    list_strings = numbers.split(",")
     list_valid_numbers = []
+    total = 0
     
     for element in list_strings:
         try:
             clean_element = int(element.strip())
             list_valid_numbers.append(clean_element)
+            total += clean_element
         except ValueError:
             continue
     
-    return list_valid_numbers
+    return list_valid_numbers, total
 
 #Ejercicio 7
 def verify_age():
@@ -95,12 +100,57 @@ def verify_age():
         return "Eres mayor de edad.\n"
     else:
         return "No eres mayor de edad.\n"
+    
+#Ejercicio 8
+def guess_number_three_tries():
+    
+    random_number = random.randint(1, 10)
+    
+    max_tries = 3
+    
+    print("Adivina el número secreto. Tienes 3 oportunidades.")
+    
+    for i in range(3):
+        try:
+            user_number = int(input("Ingresa un número: "))
+            if user_number == random_number:
+                message = f"Felicidades. ¡Has ganado!"
+                break
+            elif user_number < random_number:
+                print("Te equivocaste. El número secreto es más alto.")
+            else:
+                print("Te equivocaste. El número secreto es más bajo.")
+            max_tries -= 1         
+        except ValueError:
+            print("Entrada no válida.")
+    else:    
+        message = f"Lo siento. Has perdido. El número secreto era {random_number}.\n"
+    
+    return message
+        
+#Ejercicio 9
 
+def find_multiple_seven(user_string):
+    
+    list_numbers = user_string.split(",")
+    found_number = None
+    
+    for element in list_numbers:
+        try:
+            clean_number = int(element.strip())
+            if clean_number % 7 == 0:
+                found_number = clean_number
+                break            
+        except:
+            continue
+    
+    return found_number
+    
 user_option = 0
 
 while user_option != 10:
     
-    print("¿Qué deseas hacer?")
+    print("\n¿Qué deseas hacer?")
     print("1. Saber cuántos años tendré en 10 años.")
     print("2. ¿Puedo entrar en una discoteca?")
     print("3. ¿Cómo me fue en la escuela?")
@@ -110,8 +160,13 @@ while user_option != 10:
     print("7. Verificar mi edad.")
     print("8. ¡Adivinar el número! (3 intentos).")
     print("9. Encuenta el primer múltiplo de 7.")
+    print("10. Salir.")
     
-    user_option = int(input("Introduce el número de la opción: "))
+    try:
+        user_option = int(input("Introduce el número de la opción: "))
+    except ValueError:
+        print("Por favor, introduce un número válido.")
+        continue
     
     match user_option:        
         case 1:
@@ -130,12 +185,16 @@ while user_option != 10:
                 print(num)
         case 6:
             list = input("Escribe los números a sumar separados por una coma:")
-            list_valid_numbers = add_user_numbers(list)
-            print(f"The valid numbers are: {list_valid_numbers} and the total sum is {sum(list_valid_numbers)}")
+            list_valid_numbers, total = add_user_numbers(list)
+            print(f"Los números válidos son: {list_valid_numbers} y la suma de todos es: {total}")
         case 7:
             print(verify_age())         
-        # case 8:
-        # case 9:
+        case 8:
+            print(guess_number_three_tries())            
+        case 9:
+            user_string = input("Introduce número separados por una coma para saber cuál es múltiplo de siete.")
+            result = find_multiple_seven(user_string)
+            print(result if result is not None else "No se encontraron múltiplos de siete.")
         case 10:
             print("Goobye!")
             break;
